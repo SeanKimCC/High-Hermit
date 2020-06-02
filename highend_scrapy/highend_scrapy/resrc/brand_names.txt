@@ -4,7 +4,7 @@ balenciaga
 common-projects
 comme-des-garcons-homme
 essentials
-fear of god
+fear-of-god
 gucci
 juunj
 jw-anderson
@@ -14,7 +14,7 @@ lacoste
 lemaire
 mackage
 maison-margiela
-maison kitsune
+maison-kitsune
 off-white
 prada
 raf-simons

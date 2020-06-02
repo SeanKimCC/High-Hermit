@@ -16,6 +16,7 @@ from django.utils import timezone
 
 
 # Create your models here.
+#past prices can be added for products
 class Product(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE)

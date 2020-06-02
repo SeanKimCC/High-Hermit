@@ -39,13 +39,13 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+# CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -71,9 +71,15 @@ RANDOM_UA_OVERWRITE = False
 
 DOWNLOADER_MIDDLEWARES = {
    'highend_scrapy.middlewares.HighendScrapyDownloaderMiddleware': 543,
-   'scrapy_random_useragent_pro.middleware.RandomUserAgentMiddleware': 100,
-   'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,# important
+   # "scrapy.downloadermiddlewares.retry.RetryMiddleware": 500,
+   # 'scrapy_random_useragent_pro.middleware.RandomUserAgentMiddleware': 100,
+   # 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,# important
 }
+
+FAKEUSERAGENT_FALLBACK = "IBM WebExplorer /v0.94"
+RETRY_ENABLED = True
+RETRY_TIMES = 3
+RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 403, 404, 408]
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

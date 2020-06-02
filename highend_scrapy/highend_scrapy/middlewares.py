@@ -6,6 +6,11 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import random
+
+
+proxies = [line.rstrip() for line in open('../lib/rand_proxies.txt')]
+userAgents = [line.rstrip() for line in open('../lib/rand_user_agents.txt')]
 
 
 class HighendScrapySpiderMiddleware:
@@ -78,6 +83,7 @@ class HighendScrapyDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
+        request.headers['User-Agent'] = random.choice(userAgents) # !! These 2 lines
         return None
 
     def process_response(self, request, response, spider):
