@@ -1,11 +1,47 @@
 import React, { Component } from "react";
+import '../css/app.css';
 import { render } from "react-dom";
+import BrandLink from "./BrandLink";
+import { HashRouter } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
+import { usePromiseTracker } from "react-promise-tracker";
+import { trackPromise } from 'react-promise-tracker';
+import Loader from 'react-loader-spinner';
+
+const LoadingIndicator = props => {
+  const { promiseInProgress } = usePromiseTracker();
+  return (
+    promiseInProgress && 
+    <div
+      style={{
+        position: "absolute",
+        top: "0px",
+        left: "0px",
+        width: "100%",
+        height: "100%",
+        backgroundColor: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+    </div>
+  );  
+}
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      brandData: [],
+      productData: [],
       loaded: false,
       placeholder: "Loading"
     };
@@ -13,42 +49,52 @@ class App extends Component {
 
   componentDidMount() {
     console.log("!!!");
-    console.log(this.state.data);
+    // console.log(this.state.data);
 
-    fetch("api/brands")
+    trackPromise(fetch("/api/brands")
       .then(response => {
-        if (response.status > 400) {
+        if (response.status >= 400) {
           return this.setState(() => {
             return { placeholder: "Something went wrong!" };
           });
         }
+        console.log(response);
         return response.json();
       })
       .then(data => {
+        console.log(data);
         this.setState(() => {
           return {
-            data: [data],
+            brandData: [data],
             loaded: true
           };
         });
-      });
+      }));
   }
 
   render() {
-    console.log("!!!");
-    console.log(this.state.data);
-    if(this.state.data && this.state.data[0]) {
+    console.log("!!!!");
+    console.log(this.state.brandData, this.state.productData);
+    if(this.state.brandData && this.state.brandData[0]) {
       return (
-
-        <ul>
-          {this.state.data[0]['results'].map(contact => {
-            return (
-              <li key={contact.unique_id}>
-                {contact.name}
-              </li>
-            );
-          })}
-        </ul>
+        <Router>
+          <nav>
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              {this.state.brandData[0]['results'].map(brand => {
+                return (
+                  <li>
+                    <Link to={`/products/${encodeURI(brand.name)}&pageNum=${1}`}>{brand.name}</Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <Switch>
+            <Route path="/products/:brandName&pageNum=:pageNum" children={<ProductChild />} />
+          </Switch>
+          
+        </Router>
       );
     } else {
       return (<div></div>);
@@ -56,8 +102,20 @@ class App extends Component {
     
   }
 }
-
+function ProductChild() {
+  let { brandName, pageNum } = useParams();
+  console.log(brandName, pageNum);
+  return (
+    <BrandLink 
+      brandName={brandName}
+      pageNum={pageNum}
+    />
+  );
+}
 export default App;
 
 const container = document.getElementById("app");
-render(<App />, container);
+render(<div id="root"> 
+  <App /> 
+  <LoadingIndicator/>
+  </div>, container);
