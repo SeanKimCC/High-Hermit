@@ -3,7 +3,7 @@ from scrapy.http.request import Request
 from highend_scrapy.items import ProductItem, BrandItem, SiteItem
 from main.models import Product, Brand, Site
 
-brandNames = [line.rstrip() for line in open('../lib/brand_names.txt')]
+brandNames = [line.rstrip() for line in open('../resrc/brand_names.txt')]
 
 class MrporterSpider(scrapy.Spider):
 	name = "mrporter"

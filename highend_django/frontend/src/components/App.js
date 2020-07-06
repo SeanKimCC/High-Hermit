@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import '../css/app.css';
-import { render } from "react-dom";
+import '../css/products.css';
+
+import Header from "./Header";
 import BrandLink from "./BrandLink";
 import { HashRouter } from 'react-router-dom';
 import {
@@ -10,31 +12,31 @@ import {
   Link,
   useParams
 } from "react-router-dom";
-import { usePromiseTracker } from "react-promise-tracker";
-import { trackPromise } from 'react-promise-tracker';
+import LoadingIndicator from "./Loader";
+import { trackPromise } from "react-promise-tracker";
 import Loader from 'react-loader-spinner';
 
-const LoadingIndicator = props => {
-  const { promiseInProgress } = usePromiseTracker();
-  return (
-    promiseInProgress && 
-    <div
-      style={{
-        position: "absolute",
-        top: "0px",
-        left: "0px",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "white",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
-    >
-      <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
-    </div>
-  );  
-}
+// const LoadingIndicator = props => {
+//   const { promiseInProgress } = usePromiseTracker();
+//   return (
+//     promiseInProgress && 
+//     <div
+//       style={{
+//         position: "absolute",
+//         top: "0px",
+//         left: "0px",
+//         width: "100%",
+//         height: "100%",
+//         backgroundColor: "white",
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center"
+//       }}
+//     >
+//       <Loader type="ThreeDots" color="#2BAD60" height="100" width="100" />
+//     </div>
+//   );  
+// }
 
 class App extends Component {
   constructor(props) {
@@ -77,32 +79,31 @@ class App extends Component {
     console.log(this.state.brandData, this.state.productData);
     if(this.state.brandData && this.state.brandData[0]) {
       return (
-        <Router>
-          <nav>
-            <ul>
-              <li><Link to="/">Home</Link></li>
-              {this.state.brandData[0]['results'].map(brand => {
-                return (
-                  <li>
-                    <Link to={`/products/${encodeURI(brand.name)}&pageNum=${1}`}>{brand.name}</Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          <Switch>
-            <Route path="/products/:brandName&pageNum=:pageNum" children={<ProductChild />} />
-          </Switch>
-          
-        </Router>
+        <div id="root"> 
+
+          <Router>
+            <Header
+              brandData={this.state.brandData}
+            />
+
+            <Switch>
+              <Route path="/products/:brandName&pageNum=:pageNum" children={<BrandChild />} />
+            </Switch>
+            
+          </Router>
+          <LoadingIndicator/>
+        </div>
       );
     } else {
-      return (<div></div>);
+      return (<div id="root"> 
+                <div></div>
+                <LoadingIndicator/>
+              </div>);
     }
     
   }
 }
-function ProductChild() {
+function BrandChild() {
   let { brandName, pageNum } = useParams();
   console.log(brandName, pageNum);
   return (
@@ -114,8 +115,5 @@ function ProductChild() {
 }
 export default App;
 
-const container = document.getElementById("app");
-render(<div id="root"> 
-  <App /> 
-  <LoadingIndicator/>
-  </div>, container);
+// const container = document.getElementById("app");
+// render(<App />, container);

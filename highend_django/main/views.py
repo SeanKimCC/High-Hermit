@@ -3,8 +3,8 @@ import requests
 
 
 # Create your views here.
-from main.models import Brand, Product
-from main.serializers import BrandSerializer, ProductSerializer
+from main.models import Brand, Product, PriceHistory
+from main.serializers import BrandSerializer, ProductSerializer, PriceHistorySerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -51,6 +51,15 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 		# return Response(serializer.data)
 
+class PriceHistoryViewSet(viewsets.ModelViewSet):
+    queryset = PriceHistory.objects.all()
+    serializer_class = PriceHistorySerializer
+    
+    def list(self, request):
+        queryset = self.queryset
+        if (request.GET.get('productId')):
+            queryset = self.queryset.filter(product__unique_id=request.GET.get('productId'))
 
-
+        serializer = PriceHistorySerializer(queryset, many=True)
+        return Response(serializer.data)
 

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main.views import BrandViewSet, ProductViewSet
+from main.views import BrandViewSet, ProductViewSet, PriceHistoryViewSet
 from django.conf.urls import url, include
 
 from rest_framework.routers import DefaultRouter
@@ -24,6 +24,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'brands', BrandViewSet)
 router.register(r'products', ProductViewSet)
+router.register(r'priceHistory', PriceHistoryViewSet)
 
 
 urlpatterns = [

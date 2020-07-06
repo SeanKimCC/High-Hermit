@@ -2,6 +2,7 @@ import json
 import uuid
 
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
 # class Currency(models.Model):
@@ -16,13 +17,37 @@ from django.utils import timezone
 
 
 # Create your models here.
-#past prices can be added for products
 class Product(models.Model):
+    MALE = "M"
+    FEMALE = "F"
+    UNISEX = "U"
+    GENDER_CHOICES = (
+        (MALE, 'men'),
+        (FEMALE, 'women'),
+        (UNISEX, 'unisex'),
+    )
+    USD = "USD"
+    CAD = "CAD"
+    KRW = "KRW"
+    CURRENCY_CHOICES = (
+        ('USD', 'USD'),
+        ('CAD', 'CAD'),
+        ('KRW', 'KRW'),
+    )
+
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE)
     product_name = models.CharField(max_length=300)
     original_price = models.FloatField(null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+
+    web_specific_id = models.CharField(max_length=300)
+
     sale_price = models.FloatField()
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    # price_history = models.ForeignKey('PriceHistory', related_name='prices', on_delete=models.SET_NULL, null = True)
+    product_link = models.CharField(max_length=500, null=True, default=None)
+    product_image = models.CharField(max_length=500, null=True, default=None)
     associated_site = models.ForeignKey('Site', null=True, 
     	on_delete=models.SET_NULL)
     # currency = models.ForeignKey('Currency', default=default_currency(), on_delete=models.SET_DEFAULT)
@@ -44,9 +69,11 @@ class Product(models.Model):
     def __str__(self):
         return str(self.product_name)
 
-
-
-
+class ProductStock(models.Model):
+    #implement
+    unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    stock_data = ArrayField(models.CharField(max_length=100, null=True))
 
 class Brand(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -64,4 +91,22 @@ class Site(models.Model):
     	return str(self.name)
 
 
+class PriceHistory(models.Model):
+    USD = "USD"
+    CAD = "CAD"
+    KRW = "KRW"
+    CURRENCY_CHOICES = (
+        ('USD', 'USD'),
+        ('CAD', 'CAD'),
+        ('KRW', 'KRW'),
+    )
+
+    unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    price = models.FloatField()
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    date = models.DateField()
+
+    def __str__(self):
+        return str(self.product.product_name)
 

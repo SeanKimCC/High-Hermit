@@ -1,7 +1,21 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { trackPromise } from 'react-promise-tracker';
+import { trackPromise, usePromiseTracker } from 'react-promise-tracker';
+import { fetchProducts, exitNavigationMenu } from '../js/actions/index';
+import { connect } from "react-redux";
+import ProductCell from './ProductCell'
 
+
+function mapStateToProps(state) {
+  return { showNavigation: state.showNavigationMenu, products: state.products };
+}  
+
+function mapDispatchToProps(dispatch) {
+  return {
+    exitNavigationMenu: () => dispatch(exitNavigationMenu()),
+    fetchProducts: (brandName, pageNum) => dispatch(fetchProducts(brandName, pageNum)),
+  };
+}
 
 class BrandLink extends Component {
   constructor(props) {
@@ -13,60 +27,70 @@ class BrandLink extends Component {
       placeholder: "Loading"
     };
 
-    this.fetchProducts = this.fetchProducts.bind(this);
+    // this.fetchProducts = this.fetchProducts.bind(this);
 
   }
 
-  fetchProducts() {
-    console.log("does it get here", this.props.brandName);
+  // fetchProducts() {
+  //   console.log("does it get here", this.props.brandName);
 
-    trackPromise(fetch("/api/products/?brandName="+encodeURI(this.props.brandName)+"&page="+this.props.pageNum)
-      .then(response => {
-        if (response.status >= 400) {
-          return this.setState(() => {
-            return { placeholder: "Something went wrong!" };
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState(() => {
-          return {
-            productData: [data],
-            loaded: true
-          };
-        });
-      }));
-  }
+  //   trackPromise(fetch("/api/products/?brandName="+encodeURI(this.props.brandName)+"&page="+this.props.pageNum)
+  //     .then(response => {
+  //       if (response.status >= 400) {
+  //         return this.setState(() => {
+  //           return { placeholder: "Something went wrong!" };
+  //         });
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       this.setState(() => {
+  //         return {
+  //           productData: [data],
+  //           loaded: true
+  //         };
+  //       });
+  //     }));
+  // }
 
   componentDidMount() {
-    this.fetchProducts();
+    // this.fetchProducts();
+    console.log(this);
+    this.props.fetchProducts(this.props.brandName, this.props.pageNum);
   }
 
   componentDidUpdate(prevProps) {
      console.log(prevProps, this.props);
      if (prevProps.brandName !== this.props.brandName) {
-       this.fetchProducts();
+       // this.fetchProducts();
+      this.props.fetchProducts(this.props.brandName, this.props.pageNum);
      }
    }
 
 
   render() {
     console.log("hello");
-    if(this.state.productData && this.state.productData[0]) {
-      console.log(this.state);
+    // if(this.state.productData && this.state.productData[0]) {
+    console.log(this, "72");
+    const product_container_class = this.props.showNavigation ? 'product--container product--overlay' : 'product--container'; 
+    if(this.props.products) {
+      console.log(this.props, this.state);
       return (
-        <ul>
-          {this.state.productData[0].map(product => {
+
+        <div className={product_container_class} onMouseOver={this.props.exitNavigationMenu}>
+          {this.props.products.map(product => {
             return (
-              <li key={product.unique_id}>
-                {product.brand_name} <br/>
-                {product.product_name} <br/>
-                {product.sale_price} <br/>
-              </li>
+              <ProductCell 
+                key={product.unique_id}
+                brand={product.brand_name}
+                productName={product.product_name}
+                productPrice={product.sale_price}
+                pictureSrc={product.product_image}
+                productLink={product.product_link}
+              />
             );
           })}
-        </ul>
+        </div>
       );
     } else {
       return (<div></div>);
@@ -75,4 +99,4 @@ class BrandLink extends Component {
   }
 }
 
-export default BrandLink;
+export default connect(mapStateToProps, mapDispatchToProps)(BrandLink);

@@ -9,8 +9,8 @@ from scrapy import signals
 import random
 
 
-proxies = [line.rstrip() for line in open('../lib/rand_proxies.txt')]
-userAgents = [line.rstrip() for line in open('../lib/rand_user_agents.txt')]
+proxies = [line.rstrip() for line in open('../resrc/rand_proxies.txt')]
+userAgents = [line.rstrip() for line in open('../resrc/rand_user_agents.txt')]
 
 
 class HighendScrapySpiderMiddleware:
