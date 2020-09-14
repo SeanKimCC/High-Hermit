@@ -1,0 +1,7 @@
+.sidebar-container{
+	border: 1px #ccc solid;
+	width: 200px;
+	/*height: 100%;*/
+	position: absolute;
+	left: 0;
+}

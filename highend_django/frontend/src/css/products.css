@@ -23,7 +23,8 @@
 	display: inline-block;
 	height: 400px;
 	position: relative;
-	width: 25%
+	width: 25%;
+	padding: 10px;
 }
 
 /*for phones*/
@@ -55,11 +56,23 @@
 	color: black;
 	position: absolute;
 	width: 100%;
+	bottom: 54px;
+	left: 0;
+}
+.product_cell_description_link{
+	text-decoration: none;
+	color: black;
+	position: absolute;
+	width: 100%;
 	bottom: 0;
 	left: 0;
 }
 
-
+.product_stockbox{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
 
 .product_cell_link a:hover{
 
@@ -70,15 +83,37 @@
 .product_cell_link a:active,{
 	
 }
-
+.product_cell_description{
+	height: 54px;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+}
+.product_cell_stock_description{
+	height: 54px;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	background-color: #999;
+	opacity: 0.6;
+	display: none;
+}
 .product_cell_brand_name{
 	font-weight: bold;
+	width: 100%;
+	text-align: center;
 }
 
 .product_cell_name{
 
+	width: 100%;
+	text-align: center;
 }
 
 .product_cell_price{
 
+	width: 100%;
+	text-align: center;
 }

@@ -11,10 +11,15 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(woff|woff2|ttf|eot)$/,
+        use: 'file-loader?name=fonts/[name].[ext]!static'
       }
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
-  }
+    extensions: ['.js', '.jsx', '.css', '.less', '.json'],
+    modules: ['node_modules', './static']
+}
 };

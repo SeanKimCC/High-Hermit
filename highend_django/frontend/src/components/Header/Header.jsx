@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import '../css/header.css';
+import '../../css/header.css';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,7 +9,8 @@ import {
   useParams
 } from "react-router-dom";
 import { connect } from 'react-redux';
-import { changeNavigationCategory, exitNavigationMenu } from "../js/actions/index";
+import { changeNavigationCategory, exitNavigationMenu } from "../../js/actions/index";
+import SearchBar from './SearchBar'
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -110,7 +111,10 @@ class Header extends Component {
   render() {
     return (
       <div className="header--container borderbox">
-        <Link to="/"><div className="header--title borderbox" onMouseOver={this.props.exitNavigationMenu}>Ay Papi</div></Link>
+        <Link to="/">
+           <div className="header--title borderbox" onMouseOver={this.props.exitNavigationMenu}>FINSCHE</div>
+        </Link>
+        <SearchBar/>
         <div className="header--menu borderbox">
           <nav className="header--navbar borderbox">
             <ul className="header--navgroup borderbox">
@@ -120,14 +124,6 @@ class Header extends Component {
               />
               <HeaderItem 
                 category="Designers" 
-                changeNavigationCategory={this.props.changeNavigationCategory}
-              />
-              <HeaderItem 
-                category="Ipsum" 
-                changeNavigationCategory={this.props.changeNavigationCategory}
-              />
-              <HeaderItem 
-                category="Loren" 
                 changeNavigationCategory={this.props.changeNavigationCategory}
               />
             </ul>

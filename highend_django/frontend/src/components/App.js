@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import '../css/app.css';
 import '../css/products.css';
 
-import Header from "./Header";
+import Header from "./Header/Header";
 import BrandLink from "./BrandLink";
 import { HashRouter } from 'react-router-dom';
 import {
@@ -15,6 +15,12 @@ import {
 import LoadingIndicator from "./Loader";
 import { trackPromise } from "react-promise-tracker";
 import Loader from 'react-loader-spinner';
+import SideCategoryBar from "./SideCategoryBar/SideCategoryBar"
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheckSquare, faCoffee, faCubes } from '@fortawesome/free-solid-svg-icons'
+library.add(faCheckSquare, faCoffee, faCubes)
+
 
 // const LoadingIndicator = props => {
 //   const { promiseInProgress } = usePromiseTracker();
@@ -80,11 +86,12 @@ class App extends Component {
     if(this.state.brandData && this.state.brandData[0]) {
       return (
         <div id="root"> 
-
+          
           <Router>
             <Header
               brandData={this.state.brandData}
             />
+            <SideCategoryBar/>
 
             <Switch>
               <Route path="/products/:brandName&pageNum=:pageNum" children={<BrandChild />} />
