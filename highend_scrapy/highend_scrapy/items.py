@@ -8,7 +8,8 @@
 import scrapy
 
 from scrapy_djangoitem import DjangoItem
-from main.models import Product, Brand, Site, PriceHistory, ProductStock
+from main.models.models import Product, Brand, Site, PriceHistory, ProductStock
+from main.models.CategoryModel import Category
 
 class ProductItem(DjangoItem):
 	django_model = Product
@@ -24,6 +25,9 @@ class PriceHistoryItem(DjangoItem):
 
 class ProductStockItem(DjangoItem):
 	django_model = ProductStock
+
+class CategoryItem(DjangoItem):
+	django_model = Category
 
 
 # class HighendScrapyItem(scrapy.Item):

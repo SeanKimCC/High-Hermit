@@ -1,45 +1,50 @@
 import scrapy
-from scrapy.http.request import Request
-from highend_scrapy.items import ProductItem, BrandItem, SiteItem, PriceHistoryItem, ProductStockItem
-from main.models import Product, Brand, Site, PriceHistory, ProductStock
-from random import randint
-from scraper_api import ScraperAPIClient
 import datetime
 import json
 
-client = ScraperAPIClient('f73c58f148ce7452a6a188078c7888e5')
+from scrapy.http.request import Request
+from highend_scrapy.items import ProductItem, BrandItem, SiteItem, PriceHistoryItem, ProductStockItem
+from main.models.models import Product, Brand, Site, PriceHistory, ProductStock
+from main.models.CategoryModel import Category
+from random import randint
+from scraper_api import ScraperAPIClient
+from highend_scrapy.spiders.utils.category_mapping import map_category
+
+
+client = ScraperAPIClient('95d9c60fead49a8670428a239de1b174')
 
 brandNames = [line.rstrip() for line in open('../resrc/brand_names.txt')]
 randUAs = [line.rstrip() for line in open('../resrc/rand_user_agents.txt')]
+categories = [line.rstrip() for line in open('../resrc/ssense-categories.txt')]
+base_url = 'http://www.ssense.com/en-ca/men/designers/'
 
 class SsenseSpider(scrapy.Spider):
 	name = "ssense"
-	# start_urls = [f'https://www.ssense.com/en-ca/men/designers/{brandName}' for brandName in brandNames]
-	start_urls = [client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brandName}') for brandName in brandNames]
-	#client.scrapyGet(url = 'http://httpbin.org/ip')
-	# start_urls = [f'https://www.ssense.com/en-ca/men/designers/acne-studios']
-	# https://www.ssense.com/en-ca/men/designers/acne-studios?page=7
-	# loop through till the last page
+	# start_urls = [client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brandName}/{category}') for category in categories for brandName in brandNames]
 
-	# def start_requests(self):
-	# 	# randUA = randUAs[randint(0, len(randUAs) - 1)]
-	# 	# headers= {'User-Agent': f'{randUA}'}
-	# 	# headers = {'User-Agent': 'Enigma Browser'}
-	# 	for url in self.start_urls:
-	# 		# print(url)
-	# 		# # yield Request(url, meta={'ua': 'desktop'})
-	# 		yield Request(url)
+	def start_requests(self):
+		for brandName in brandNames:
+			print(f'SCRAPING {brandName}')
+			for category in categories:
+				print(f'	SCRAPING {category}')
+				data = {'brandName': brandName, 'category': category}
+				yield scrapy.Request(client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brandName}/{category}'), meta=data)
+
 
 	def parse(self, response):
 		# links = response.xpath("//img/@data-srcset")
+		brand_name = response.meta['brandName']
+		category_name = response.meta['category']
+		print(brand_name, category_name)
+		currURL = response.request.url
+		#category = currURL.split('/')[-1]
+		print(currURL, currURL.split('/'))
+
 		SSENSE_LINK = "http://www.ssense.com/en-ca"
-		pageExtract = response.xpath("//li/a[contains(text(), '→')]/@href").extract()
-		nextPage = None
-		if(pageExtract):
-			nextPage = pageExtract[0][-1]
-		brand_name = response.xpath("//h1[@id='listing-title']/text()").extract()
-		if(brand_name):
-			brand_name = brand_name[0] 
+		
+		#brand_name = response.xpath("//h1[@id='listing-title']/text()").extract()
+		# if(brand_name):
+		# 	brand_name = brand_name[0] 
 
 		product_script = response.xpath("//figure[@class='browsing-product-item']/script/text()").extract()
 		# print(product_script)
@@ -53,6 +58,11 @@ class SsenseSpider(scrapy.Spider):
 
 		ssense_site, site_created = Site.objects.get_or_create(name="Ssense", link=SSENSE_LINK)
 		ssense_site.save()
+
+		print("category:", category_name)
+		print(map_category(category_name))
+		category, category_created = Category.objects.get_or_create(name=map_category(category_name))
+		category.save()
 
 		for itemJson in product_json:
 			product_ID = itemJson["productID"]
@@ -70,6 +80,21 @@ class SsenseSpider(scrapy.Spider):
 			else:
 				gender = "U"
 
+
+
+			# print(len(str(product_ID)), 
+			# 	len(str(product_SKU)), 
+			# 	len(str(product_name)), 
+			# 	len(str(product_price)), 
+			# 	len(str(product_currency)), 
+			# 	len(str(product_url)), 
+			# 	len(str(product_image)), 
+			# 	len(str(product_avail)),
+			# 	len(brand.name),
+			# 	len(gender),
+			# 	len(category))
+
+
 			p, created = Product.objects.update_or_create(
 				product_name=product_name,
 				web_specific_id=product_ID,
@@ -81,6 +106,7 @@ class SsenseSpider(scrapy.Spider):
 					'product_link': product_url, 
 					'product_image': product_image,
 					'gender': gender,
+					'category': category,	
 				}
 			)
 			p.save()
@@ -97,23 +123,28 @@ class SsenseSpider(scrapy.Spider):
 			)
 			product_history_item.save()
 
-			yield scrapy.Request(
-				client.scrapyGet(url=(SSENSE_LINK + product_url)),
-				callback=self.parse_product,
-				meta={'product': p}
-			)
+			# yield scrapy.Request(
+			# 	client.scrapyGet(url=(SSENSE_LINK + product_url)),
+			# 	callback=self.parse_product,
+			# 	meta={'product': p}
+			# )
 
-		bName = brand_name.strip().lower().replace(" ", "-")
-		url = response.request.url
+		#bName = brand_name.strip().lower().replace(" ", "-")
+
+		pageExtract = response.xpath("//li/a[contains(text(), '→')]/@href").extract()
+		nextPage = None
+		if(pageExtract):
+			nextPage = pageExtract[0][-1]
+
 		if(nextPage):
-			# randUA = randUAs[randint(0, len(randUAs) - 1)]
-			# yield Request(f'https://www.ssense.com/en-ca/men/designers/{bName}?page={nextPage}', headers={'User-Agent': f'{randUA}'})
-			yield scrapy.Request(client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{bName}?page={nextPage}'), callback=self.parse)
+			meta_data = {'brandName': brand_name, 'category': category_name}
+			yield scrapy.Request(client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brand_name}/{category_name}?page={nextPage}'), meta=meta_data, callback=self.parse)
 
+
+	# TODO: parse products when things are more stable
 	def parse_product(self, response):
 		# print("response!! :", response, response.body)
 		product = response.meta['product']
-		multiSizeText = response.xpath("//select[@id='size']/option/text()").extract()
 		oneSize = response.xpath("//div[contains(@class, 'onesize')]/text()").extract()
 		print(oneSize)
 

@@ -1,9 +1,19 @@
 import scrapy
 from scrapy.http.request import Request
-from highend_scrapy.items import ProductItem, BrandItem, SiteItem
-from main.models import Product, Brand, Site
+from highend_scrapy.items import ProductItem, BrandItem, SiteItem, PriceHistoryItem, ProductStockItem
+from main.models.models import Product, Brand, Site, PriceHistory, ProductStock
+from main.models.CategoryModel import Category
+from random import randint
+from scraper_api import ScraperAPIClient
+import datetime
+import json
+
+client = ScraperAPIClient('fb2e3bc1b5fcb297e8b83a4aa703d199')
 
 brandNames = [line.rstrip() for line in open('../resrc/brand_names.txt')]
+randUAs = [line.rstrip() for line in open('../resrc/rand_user_agents.txt')]
+categories = [line.rstrip() for line in open('../resrc/categories/mrporter-categories.txt')]
+base_url = 'http://www.ssense.com/en-ca/men/designers/'
 
 class MrporterSpider(scrapy.Spider):
 	name = "mrporter"
@@ -13,11 +23,59 @@ class MrporterSpider(scrapy.Spider):
 
 	def start_requests(self):
 		# headers= {'User-Agent': 'IBM WebExplorer /v0.94'}
-		for url in self.start_urls:
-			print(url)
-			yield Request(url)
+		category_set = {
+			'clothing': ['blazers', 'casual-shirts', 'coats-and-jackets', 'jeans', \
+			'knitwear', 'pants', 'polo-shirts', 'shorts', 'suits', 'sweats', 'swimwear', 't-shirts'],
+			'shoes': ['boots', 'sneakers', 'derby-shoes', 'loafers', 'sandals', 'slides', 'slippers'],
+			'accessories': ['bags', 'hats', 'scarves', 'wallets']
+		}
+		for brandName in brandNames:
+			print(f'SCRAPING {brandName}')
+			for category in categories:
+				print(f'	SCRAPING {category}')
+				for sub_category in category_set[category]:
+					print(f'		SCRAPING {sub_category}')
+					data = {'brandName': brandName, 'category': category}
+					yield scrapy.Request(client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brandName}/{category}'), meta=data)
+
+		for brandName in brandNames:
+			print(f'SCRAPING {brandName}')
+			for category in categories:
+				print(f'	SCRAPING {category}')
+				data = {'brandName': brandName, 'category': category}
+				yield scrapy.Request(client.scrapyGet(url=f'http://www.ssense.com/en-ca/men/designers/{brandName}/{category}'), meta=data)
+
 
 	def parse(self, response):
+
+		brand_name = response.meta['brandName']
+		category_name = response.meta['category']
+		currURL = response.request.url
+		#category = currURL.split('/')[-1]
+		print(currURL, currURL.split('/'))
+
+		SSENSE_LINK = "http://www.ssense.com/en-ca"
+		
+		#brand_name = response.xpath("//h1[@id='listing-title']/text()").extract()
+		# if(brand_name):
+		# 	brand_name = brand_name[0] 
+
+		product_script = response.xpath("//figure[@class='browsing-product-item']/script/text()").extract()
+		# print(product_script)
+		product_json = [json.loads(ps.replace("\n", "")) for ps in product_script]
+		# print(product_json)
+
+
+
+		brand, brand_created = Brand.objects.get_or_create(name=brand_name)
+		brand.save()
+
+		ssense_site, site_created = Site.objects.get_or_create(name="Ssense", link=SSENSE_LINK)
+		ssense_site.save()
+
+		category, category_created = Category.objects.get_or_create(name=category_name.upper())
+		category.save()
+		
 		# links = response.xpath("//img/@data-srcset")
 		pageCounter = response.xpath("//span[@class='Pagination6__currentPage']/text()").extract()[0].split()
 		print(pageCounter)

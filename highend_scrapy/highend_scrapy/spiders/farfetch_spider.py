@@ -1,20 +1,24 @@
-#https://www.farfetch.com/ca/shopping/men/acne-studios/items.aspx?page=2
 import scrapy
 from scrapy.http.request import Request
-from highend_scrapy.items import ProductItem, BrandItem, SiteItem
-from main.models import Product, Brand, Site
+from highend_scrapy.items import ProductItem, BrandItem, SiteItem, PriceHistoryItem, ProductStockItem
+from main.models.models import Product, Brand, Site, PriceHistory, ProductStock
+from main.models.CategoryModel import Category
+from random import randint
+from scraper_api import ScraperAPIClient
+import datetime
+import json
 
 class FarfetchSpider(scrapy.Spider):
 	name = "farfetch"
-	start_urls = [f'https://www.farfetch.com/ca/shopping/men/acne-studios/items.aspx?page={pageNum}' for pageNum in range(10)]
-	# https://www.ssense.com/en-ca/men/designers/acne-studios?page=7
-	# loop through till the last page
 
 	def start_requests(self):
-		headers= {'User-Agent': 'IBM WebExplorer /v0.94'}
-		for url in self.start_urls:
-			print(url)
-			yield Request(url, headers=headers)
+		for brandName in brandNames:
+			print(f'SCRAPING {brandName}')
+			for category in categories:
+				print(f'	SCRAPING {category}')
+				data = {'brandName': brandName, 'category': category}
+				yield scrapy.Request(client.scrapyGet(url=f'https://www.farfetch.com/ca/shopping/men/{brandName}/{category}'), meta=data)
+
 
 	def parse(self, response):
 		# links = response.xpath("//img/@data-srcset")
