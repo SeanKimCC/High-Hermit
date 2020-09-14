@@ -4,6 +4,7 @@ import uuid
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
+from main.models.CategoryModel import Category
 
 # class Currency(models.Model):
 # 	official_currency_abbrv = models.CharField(max_length=100, unique=True)
@@ -30,31 +31,31 @@ class Product(models.Model):
     CAD = "CAD"
     KRW = "KRW"
     CURRENCY_CHOICES = (
-        ('USD', 'USD'),
-        ('CAD', 'CAD'),
-        ('KRW', 'KRW'),
+        (USD, 'USD'),
+        (CAD, 'CAD'),
+        (KRW, 'KRW'),
     )
 
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE)
     product_name = models.CharField(max_length=300)
-    original_price = models.FloatField(null=True)
+    
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
-    web_specific_id = models.CharField(max_length=300)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
 
+    web_specific_id = models.CharField(max_length=300, null=True)
+
+    original_price = models.FloatField(null=True)
     sale_price = models.FloatField()
+    
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
     # price_history = models.ForeignKey('PriceHistory', related_name='prices', on_delete=models.SET_NULL, null = True)
     product_link = models.CharField(max_length=500, null=True, default=None)
     product_image = models.CharField(max_length=500, null=True, default=None)
     associated_site = models.ForeignKey('Site', null=True, 
     	on_delete=models.SET_NULL)
-    # currency = models.ForeignKey('Currency', default=default_currency(), on_delete=models.SET_DEFAULT)
 
-    item_type = models.CharField(max_length=100, null=True)
-
-    data = models.TextField() # this stands for our crawled data
     date = models.DateTimeField(default=timezone.now)
     
     # This is for basic and custom serialisation to return it to client as a JSON.
@@ -78,6 +79,7 @@ class ProductStock(models.Model):
 class Brand(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, null=True, unique=True)
+    item_count = models.FloatField(default=0)
 
     def __str__(self):
     	return str(self.name)
@@ -86,6 +88,7 @@ class Site(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, null=True, unique=True)
     link = models.CharField(max_length=300, null=True)
+    item_count = models.FloatField(default=0)
 
     def __str__(self):
     	return str(self.name)

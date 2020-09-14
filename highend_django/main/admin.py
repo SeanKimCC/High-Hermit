@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, Brand, Site, PriceHistory, ProductStock
-
+from .models.models import Product, Brand, Site, PriceHistory, ProductStock
+from .models.CategoryModel import Category
 
 class PriceHistoryInline(admin.TabularInline):
 	model = PriceHistory
@@ -35,8 +35,13 @@ class ProductStockAdmin(admin.ModelAdmin):
 	model = ProductStock
 	list_per_page = 50
 
+class CategoryAdmin(admin.ModelAdmin):
+	model = Category
+	list_per_page = 50
+
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Site)
 admin.site.register(ProductStock, ProductStockAdmin)
+admin.site.register(Category, CategoryAdmin)

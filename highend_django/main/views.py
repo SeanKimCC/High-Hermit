@@ -3,7 +3,7 @@ import requests
 
 
 # Create your views here.
-from main.models import Brand, Product, PriceHistory
+from main.models.models import Brand, Product, PriceHistory
 from main.serializers import BrandSerializer, ProductSerializer, PriceHistorySerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
