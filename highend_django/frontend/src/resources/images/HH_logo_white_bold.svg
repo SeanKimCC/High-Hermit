@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: SketchAPI 5.1.316 <https://api.sketch.io/> -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketchjs="https://sketch.io/dtd/" style="" sketchjs:metadata="eyJ0aXRsZSI6ImY5MmQwZjU0LWM4MWUtNDkzMS1hMmYwLTllNDU3YzgxNTE3OSIsImRlc2NyaXB0aW9uIjoiTWFkZSB3aXRoIFNrZXRjaHBhZCAtIGh0dHBzOi8vc2tldGNoLmlvL3NrZXRjaHBhZCIsIm1ldGFkYXRhIjp7fSwiY2xpcFBhdGgiOnsiZW5hYmxlZCI6dHJ1ZSwic3R5bGUiOnsic3Ryb2tlU3R5bGUiOiJibGFjayIsImxpbmVXaWR0aCI6MX19LCJleHBvcnREUEkiOjcyLCJleHBvcnRGb3JtYXQiOiJwbmciLCJleHBvcnRRdWFsaXR5IjowLjk1LCJ1bml0cyI6InB4Iiwid2lkdGgiOjE4MCwiaGVpZ2h0IjoxNTAsInBhZ2VzIjp7Imxlbmd0aCI6MSwiZGF0YSI6W3sid2lkdGgiOjE4MCwiaGVpZ2h0IjoxNTB9XX19" width="180" height="150" viewBox="0 0 180 150" sketchjs:version="5.1.316">
+<path sketchjs:tool="rectangle" style="fill: none; mix-blend-mode: source-over; vector-effect: non-scaling-stroke;" d="M0 0 L180 0 180 150 0 150 z"/>
+<g sketchjs:tool="fancyText" style="mix-blend-mode: source-over;" transform="matrix(1,0,0,1,-77.15234375,36.546875)">
+	<g sketchjs:uid="1" style="">
+		<g sketchjs:uid="2" style="">
+			<path d="M 195.984375 43.037109375L 195.984375 15.84375L 203.75390625 15.84375L 203.75390625 78L 195.984375 78L 195.984375 49.51171875L 139.0078125 49.51171875L 139.0078125 78L 131.23828125 78L 131.23828125 15.84375L 139.0078125 15.84375L 139.0078125 43.037109375L 195.984375 43.037109375Z" sketchjs:uid="3" style="fill: #ffffff; stroke: #ffffff; stroke-width: 2.48625; stroke-miterlimit: 10; paint-order: fill stroke markers;"/>
+		</g>
+	</g>
+</g>
+<g sketchjs:tool="fancyText" style="mix-blend-mode: source-over;" transform="matrix(1,0,0,1,55,33)">
+	<g sketchjs:uid="1" style="">
+		<g sketchjs:uid="2" style="">
+			<path d="M 50.484375 22.490234375L 50.484375 8.09375L 54.59765625 8.09375L 54.59765625 41L 50.484375 41L 50.484375 25.91796875L 20.3203125 25.91796875L 20.3203125 41L 16.20703125 41L 16.20703125 8.09375L 20.3203125 8.09375L 20.3203125 22.490234375L 50.484375 22.490234375Z" sketchjs:uid="3" style="fill: #ffffff; stroke: #ffffff; stroke-width: 1.31625; stroke-miterlimit: 10; paint-order: fill stroke markers;"/>
+		</g>
+	</g>
+</g>
+</svg>

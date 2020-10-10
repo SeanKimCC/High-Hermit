@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import requests
+from django.http import Http404
 
 
 # Create your views here.
@@ -32,24 +33,30 @@ class ProductViewSet(viewsets.ModelViewSet):
     #    	# 	return qs.filter(brand=self.kwargs['brandName'])
     #    	# return 
     def list(self, request):
-    	queryset = self.queryset
-    	
+        queryset = Product.objects.get_queryset().order_by('product_name')
 
-    	if(request.GET.get('brandName')):
-    		queryset=self.queryset.filter(brand__name=request.GET.get('brandName'))
+        print("hello", request.GET.get('page'))
+        if(request.GET.get('brandName')):
+            queryset=self.queryset.filter(brand__name=request.GET.get('brandName')).order_by('product_name')
 
-    	page = self.paginate_queryset(queryset)
-    	if page is not None:
-    		serializer = ProductSerializer(page, many=True)
-    	else:
-    		serializer = ProductSerializer(queryset, many=True)
-    	return Response(serializer.data)
-		# serializer = ProductSerializer(queryset)
-		# serializer=ProductSerializer(queryset)
+        try:
+            page = self.paginate_queryset(queryset)
+        except Exception as exception:
+            print(type(exception).__name__)
+            print("hello")
+        if page is not None:
+            serializer = ProductSerializer(page, many=True)
+            print(1, serializer)
+        else:
+            serializer = ProductSerializer(queryset, many=True)
+            print(2, serializer)
+        return Response(serializer.data)
+        # serializer = ProductSerializer(queryset)
+        # serializer=ProductSerializer(queryset)
 
-		# serializer = ProductSerializer(queryset)
+        # serializer = ProductSerializer(queryset)
 
-		# return Response(serializer.data)
+        # return Response(serializer.data)
 
 class PriceHistoryViewSet(viewsets.ModelViewSet):
     queryset = PriceHistory.objects.all()

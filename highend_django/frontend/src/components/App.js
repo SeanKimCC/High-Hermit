@@ -3,6 +3,7 @@ import '../css/app.css';
 import '../css/products.css';
 
 import Header from "./Header/Header";
+import FrontPage from "./FrontPage";
 import BrandLink from "./BrandLink";
 import { HashRouter } from 'react-router-dom';
 import {
@@ -17,9 +18,10 @@ import { trackPromise } from "react-promise-tracker";
 import Loader from 'react-loader-spinner';
 import SideCategoryBar from "./SideCategoryBar/SideCategoryBar"
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheckSquare, faCoffee, faCubes } from '@fortawesome/free-solid-svg-icons'
-library.add(faCheckSquare, faCoffee, faCubes)
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCheckSquare, faCoffee, faCubes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faCheckSquare, faCoffee, faCubes);
 
 
 // const LoadingIndicator = props => {
@@ -56,7 +58,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log("!!!");
     // console.log(this.state.data);
 
     trackPromise(fetch("/api/brands")
@@ -66,11 +67,9 @@ class App extends Component {
             return { placeholder: "Something went wrong!" };
           });
         }
-        console.log(response);
         return response.json();
       })
       .then(data => {
-        console.log(data);
         this.setState(() => {
           return {
             brandData: [data],
@@ -81,20 +80,19 @@ class App extends Component {
   }
 
   render() {
-    console.log("!!!!");
-    console.log(this.state.brandData, this.state.productData);
     if(this.state.brandData && this.state.brandData[0]) {
       return (
         <div id="root"> 
           
           <Router>
-            <Header
-              brandData={this.state.brandData}
-            />
-            <SideCategoryBar/>
 
             <Switch>
-              <Route path="/products/:brandName&pageNum=:pageNum" children={<BrandChild />} />
+              <Route path="/products/:brandName?/:pageNum?" children={
+                <BrandChild
+                  brandData={this.state.brandData}
+                />
+              }/>
+              <Route path="/" children={<FrontPage/>}/>
             </Switch>
             
           </Router>
@@ -102,22 +100,29 @@ class App extends Component {
         </div>
       );
     } else {
-      return (<div id="root"> 
-                <div></div>
-                <LoadingIndicator/>
-              </div>);
+      return (
+        <div id="root"> 
+          <div></div>
+          <LoadingIndicator/>
+        </div>);
     }
     
   }
 }
-function BrandChild() {
+function BrandChild(props) {
+  console.log(props.brandData);
   let { brandName, pageNum } = useParams();
-  console.log(brandName, pageNum);
+  console.log("116:", brandName, pageNum);
   return (
-    <BrandLink 
-      brandName={brandName}
-      pageNum={pageNum}
-    />
+    <React.Fragment>
+      <Header
+        brandData={props.brandData}
+      />
+      <BrandLink 
+        brandName={brandName}
+        pageNum={pageNum}
+      />
+    </React.Fragment>
   );
 }
 export default App;

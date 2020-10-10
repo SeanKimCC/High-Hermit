@@ -18,9 +18,8 @@
 	font-size: 30px;
 	color: white;
 	float: left;
-	padding: 10px 15px;
+	padding: 0px 10px;
 	height: 100%;
-	margin-right: 30px;
 }  
 .header--menu{
 	height: 60px;
@@ -32,6 +31,13 @@
 	right: 0;
 	top: 0;
 }
+
+.header--logo{
+	max-height: 60px;
+	max-width: 200px;
+}
+
+
 
 /* nav bar */
 .header--navgroup{

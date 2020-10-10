@@ -1,4 +1,4 @@
-import { FETCH_BRAND_PRODUCTS, CHANGE_NAVIGATION_CATEGORY ,EXIT_NAVIGATION_MENU} from "../constants/action-types";
+import { FETCH_PRODUCTS, CHANGE_NAVIGATION_CATEGORY ,EXIT_NAVIGATION_MENU } from "../constants/action-types";
 
 const initialState = {
   products: [],
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 function rootReducer(state = initialState, action) {
-	if(action.type === FETCH_BRAND_PRODUCTS) {
+	if(action.type === FETCH_PRODUCTS) {
 		return {...state, products: action.payload};
 	} else if(action.type === CHANGE_NAVIGATION_CATEGORY) {
 		console.log("13", action.payload);

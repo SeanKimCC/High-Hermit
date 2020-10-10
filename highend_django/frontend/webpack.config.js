@@ -15,7 +15,18 @@ module.exports = {
       {
         test: /\.(woff|woff2|ttf|eot)$/,
         use: 'file-loader?name=fonts/[name].[ext]!static'
-      }
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-url-loader',
+            options: {
+              limit: 10000,
+            },
+          },
+        ],
+      },
     ]
   },
   resolve: {

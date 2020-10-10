@@ -39,7 +39,7 @@ class HeaderNavigationMenu extends Component {
     const brands = this.props.brandData[0]['results'].map(brand => {
       return (
         <li className="brand-menu-link">
-          <Link to={`/products/${encodeURI(brand.name)}&pageNum=${1}`}>{brand.name}</Link>
+          <Link to={`/products/${encodeURI(brand.name)}/${1}`}>{brand.name}</Link>
         </li>
       );
     });
@@ -112,9 +112,16 @@ class Header extends Component {
     return (
       <div className="header--container borderbox">
         <Link to="/">
-           <div className="header--title borderbox" onMouseOver={this.props.exitNavigationMenu}>FINSCHE</div>
+           <div className="header--title borderbox" onMouseOver={this.props.exitNavigationMenu}>
+             <img className="header--logo" src={require("../../resources/images/HH_logo_white_bold_resized.svg")} alt="High Hermit"
+               onMouseOver={e => (e.currentTarget.src = require("../../resources/images/HH_logo_whitegreen_bold_resized.svg"))}
+               onMouseOut={e => (e.currentTarget.src = require("../../resources/images/HH_logo_white_bold_resized.svg"))}
+             />
+           </div>
         </Link>
-        <SearchBar/>
+        <SearchBar
+          searchbarLocation="header"
+        />
         <div className="header--menu borderbox">
           <nav className="header--navbar borderbox">
             <ul className="header--navgroup borderbox">

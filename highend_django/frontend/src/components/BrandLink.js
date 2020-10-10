@@ -55,7 +55,7 @@ class BrandLink extends Component {
 
   componentDidMount() {
     // this.fetchProducts();
-    console.log(this);
+    console.log("line 58 of BrandLink.js", this);
     this.props.fetchProducts(this.props.brandName, this.props.pageNum);
   }
 
@@ -63,7 +63,8 @@ class BrandLink extends Component {
      console.log(prevProps, this.props);
      if (prevProps.brandName !== this.props.brandName) {
        // this.fetchProducts();
-      this.props.fetchProducts(this.props.brandName, this.props.pageNum);
+       console.log("line 66 of BrandLink.js", this);
+       this.props.fetchProducts(this.props.brandName, this.props.pageNum);
      }
    }
 

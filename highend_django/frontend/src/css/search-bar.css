@@ -1,8 +1,7 @@
-#searchBar {  
+.header-searchbar{
 	height: 30px;
 	width: 200px;
 }
-
 #searchBarContainer{
 	height: 100%;
 	padding: 4px 0px;
