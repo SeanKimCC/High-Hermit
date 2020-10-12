@@ -87,6 +87,11 @@ class App extends Component {
           <Router>
 
             <Switch>
+              <Route path="/products/search=:searchQuery?" children={
+                <SearchBrandChild
+                  brandData={this.state.brandData}
+                />
+              }/>
               <Route path="/products/:brandName?/:pageNum?" children={
                 <BrandChild
                   brandData={this.state.brandData}
@@ -125,6 +130,23 @@ function BrandChild(props) {
     </React.Fragment>
   );
 }
+
+function SearchBrandChild(props) {
+  console.log(props.brandData);
+  let { searchQuery } = useParams();
+  console.log("138:", searchQuery);
+  return (
+    <React.Fragment>
+      <Header
+        brandData={props.brandData}
+      />
+      <BrandLink 
+        searchQuery={searchQuery}
+      />
+    </React.Fragment>
+  );
+}
+
 export default App;
 
 // const container = document.getElementById("app");

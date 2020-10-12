@@ -2,18 +2,23 @@ import axios from 'axios';
 import { FETCH_PRODUCTS, CHANGE_NAVIGATION_CATEGORY, EXIT_NAVIGATION_MENU } from "../constants/action-types";
 import { trackPromise } from 'react-promise-tracker';
 
-export function fetchProducts(brandName, pageNum) {
+export function fetchProducts(brandName, pageNum, searchQuery) {
 	console.log("gets to fetch products");
 
-	let url = '/api/products/';
+	let url = '/api/products/?';
 	console.log("HERE's BRANDNAME: ", brandName);
-	if (brandName && pageNum) {
-		url = `/api/products/?brandName=${encodeURI(brandName)}&page=${pageNum}`;
-	} else if (brandName) {
-		url = `/api/products/?brandName=${encodeURI(brandName)}`;
+	if (brandName) {
+		url += `brandName=${encodeURI(brandName)}&`;
+	} 
+	if (pageNum) {
+		url += `page=${pageNum}&`;
 	} else {
-		url = `/api/products/?page=1`;
+		url += `page=1&`;
 	}
+	if (searchQuery) {
+		url += `searchQuery=${encodeURI(searchQuery)}`;
+	}
+
 	return (dispatch) => {
 		// dispatch({ type: START_FETCHING_BRAND_PRODUCTS });
 		trackPromise(fetch(url)

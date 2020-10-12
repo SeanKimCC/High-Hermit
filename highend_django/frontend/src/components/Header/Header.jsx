@@ -96,7 +96,7 @@ class Header extends Component {
     super(props);
     this.state = {
       brandName: '',
-      productData: [],
+      brandData: [],
       loaded: false,
       placeholder: "Loading"
     };

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { trackPromise, usePromiseTracker } from 'react-promise-tracker';
+// import { trackPromise, usePromiseTracker } from 'react-promise-tracker';
 import { fetchProducts, exitNavigationMenu } from '../js/actions/index';
 import { connect } from "react-redux";
-import ProductCell from './ProductCell'
+import ProductCell from './ProductCell';
 
 
 function mapStateToProps(state) {
@@ -56,7 +56,7 @@ class BrandLink extends Component {
   componentDidMount() {
     // this.fetchProducts();
     console.log("line 58 of BrandLink.js", this);
-    this.props.fetchProducts(this.props.brandName, this.props.pageNum);
+    this.props.fetchProducts(this.props.brandName, this.props.pageNum, this.props.searchQuery);
   }
 
   componentDidUpdate(prevProps) {
@@ -64,7 +64,7 @@ class BrandLink extends Component {
      if (prevProps.brandName !== this.props.brandName) {
        // this.fetchProducts();
        console.log("line 66 of BrandLink.js", this);
-       this.props.fetchProducts(this.props.brandName, this.props.pageNum);
+       this.props.fetchProducts(this.props.brandName, this.props.pageNum, this.props.searchQuery);
      }
    }
 

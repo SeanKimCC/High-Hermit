@@ -1,15 +1,19 @@
 from django.shortcuts import render
+from django.contrib.postgres.search import SearchVector
 import requests
 from django.http import Http404
 
-
-# Create your views here.
 from main.models.models import Brand, Product, PriceHistory
 from main.serializers import BrandSerializer, ProductSerializer, PriceHistorySerializer
+
+# from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-# from rest_framework import generics
+from django.db.models import Q
+
+# Create your views here.
+
 
 class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
@@ -39,6 +43,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         if(request.GET.get('brandName')):
             queryset=self.queryset.filter(brand__name=request.GET.get('brandName')).order_by('product_name')
 
+        if(request.GET.get('searchQuery')):
+            queryset = queryset.annotate(
+                search=SearchVector('brand__name', 'product_name')
+            ).filter(search=request.GET.get('searchQuery'))
+            print(queryset, request.GET.get('searchQuery'))
         try:
             page = self.paginate_queryset(queryset)
         except Exception as exception:

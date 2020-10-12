@@ -2,7 +2,14 @@
 	height: 30px;
 	width: 200px;
 }
-#searchBarContainer{
+.header-searchbar-container{
 	height: 100%;
 	padding: 4px 0px;
+}
+.search-icon{
+	height: 60px;
+	position: absolute;
+	left: 18px;
+	color: black;
+	font-size: 18px;
 }
