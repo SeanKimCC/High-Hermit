@@ -58,3 +58,10 @@
 	width: 100%;
 	text-align: center;
 }
+.frontpage-search-icon{
+	height: 60px;
+	position: absolute;
+	left: 18px;
+	color: black;
+	font-size: 18px;
+}
