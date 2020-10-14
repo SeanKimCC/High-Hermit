@@ -70,6 +70,7 @@ class App extends Component {
         return response.json();
       })
       .then(data => {
+        console.log("line 73:", data);
         this.setState(() => {
           return {
             brandData: [data],

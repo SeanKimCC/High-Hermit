@@ -36,7 +36,7 @@ class HeaderNavigationMenu extends Component {
   }
 
   DesignersMenu() {
-    const brands = this.props.brandData[0]['results'].map(brand => {
+    const brands = this.props.brandData[0].map(brand => {
       return (
         <li className="brand-menu-link">
           <Link to={`/products/${encodeURI(brand.name)}/${1}`}>{brand.name}</Link>
@@ -44,13 +44,13 @@ class HeaderNavigationMenu extends Component {
       );
     });
     return brands;
-
   }
   
 
   render() {
     const hello = this.props.category;
     console.log("21", this.props.category, this.props.showNavigation);
+    console.log(this.DesignersMenu());
     return (
       this.props.showNavigation ? 
       <div id="naviMenu" className="header--navigation-menu borderbox">

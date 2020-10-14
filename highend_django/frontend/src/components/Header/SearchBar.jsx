@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 import {
   Link,
   withRouter,
@@ -12,21 +12,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { connect } from "react-redux";
 import { fetchProducts } from '../../js/actions/index';
 
+import Select from 'react-select';
 
-
-function mapStateToProps(state) {
-  return { products: state.products };
-}  
-
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchProducts: (brandName, pageNum, searchQuery) => dispatch(fetchProducts(brandName, pageNum, searchQuery)),
-  };
+const customStyles = {
+  container: (provided, state) => ({
+    ...provided,
+    width: '200px',
+    fontSize: '15px',
+    position: 'absolute',
+    left: '180px',
+    top: '11px',
+  }),
 }
+ 
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' },
+];
 
 
 function SearchBar(props){
 	const [inputText, setInputText] = useState('');
+  const [selectedOption, setSelectedOption] = useState(options[0]);
+
 	let history = useHistory();
 	const dispatch = useDispatch();
 
@@ -46,22 +55,32 @@ function SearchBar(props){
 		}
 	}
 
-  	let inputBoxClass = "";
-  	let containerClass = "";
-  	let searchIconClass = "";
-  	if (props.searchbarLocation == "frontpage"){
-  		containerClass = "frontpage-searchbar-container";
-  		inputBoxClass = "frontpage-searchbar";
-  		searchIconClass = "frontpage-search-icon";
+  const handleChangeOptions = (sOpt) => {
+    setSelectedOption(sOpt);
+  }
 
-  	}else{
-  		containerClass = "header-searchbar-container";
-  		inputBoxClass = "header-searchbar";
-  		searchIconClass = "header-search-icon";
-  	}
-    return(
+	let inputBoxClass = "";
+	let containerClass = "";
+	let searchIconClass = "";
+	if (props.searchbarLocation == "frontpage"){
+		containerClass = "frontpage-searchbar-container";
+		inputBoxClass = "frontpage-searchbar";
+		searchIconClass = "frontpage-search-icon";
+
+	}else{
+		containerClass = "header-searchbar-container";
+		inputBoxClass = "header-searchbar";
+		searchIconClass = "header-search-icon";
+	}
+  return(
+    <React.Fragment>
+      <Select
+        styles={customStyles}
+        value={selectedOption}
+        onChange={handleChangeOptions}
+        options={options}
+      />
       <div id="searchBarContainer" className={containerClass}>
-      	<div></div>
       	<FontAwesomeIcon className={searchIconClass} icon={faSearch} />
         <input id="searchBar" type="text" name="fname"
         	className={inputBoxClass}
@@ -71,6 +90,7 @@ function SearchBar(props){
         	onSubmit={handleInputSubmit}
         />
       </div>
-    );
+    </React.Fragment>
+  );
 }
 export default SearchBar;
